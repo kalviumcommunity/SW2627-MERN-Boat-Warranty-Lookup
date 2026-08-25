@@ -1,0 +1,25 @@
+{
+  "name": "sw2627-mern-boat-warranty-lookup",
+  "version": "1.0.0",
+  "description": "A MERN stack web application for checking boat warranty information and repair history using a serial number.",
+  "main": "server/server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalviumcommunity/SW2627-MERN-Boat-Warranty-Lookup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kalviumcommunity/SW2627-MERN-Boat-Warranty-Lookup/issues"
+  },
+  "homepage": "https://github.com/kalviumcommunity/SW2627-MERN-Boat-Warranty-Lookup#readme"
+}
