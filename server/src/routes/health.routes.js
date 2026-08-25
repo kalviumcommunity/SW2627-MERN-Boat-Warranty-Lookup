@@ -1,8 +1,12 @@
 const express = require("express");
-const { healthCheck } = require("../controllers/health.controller");
 
 const router = express.Router();
 
-router.get("/", healthCheck);
+router.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is healthy",
+  });
+});
 
 module.exports = router;
