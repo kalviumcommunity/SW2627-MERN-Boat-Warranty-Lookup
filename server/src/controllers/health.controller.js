@@ -1,8 +1,12 @@
-const healthCheck = (req, res) => {
+const express = require("express");
+
+const router = express.Router();
+
+router.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Boat Warranty API is running"
+    message: "BOAT Warranty API is running"
   });
-};
+});
 
-module.exports = { healthCheck };
+module.exports = router;
