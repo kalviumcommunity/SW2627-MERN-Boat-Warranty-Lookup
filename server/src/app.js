@@ -1,21 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 
 const healthRoutes = require("./routes/health.routes");
 const productRoutes = require("./routes/product.routes");
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/products", productRoutes);
 app.use("/api/v1/health", healthRoutes);
+app.use("/api/v1/products", productRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: "Route not found"
   });
 });
 
