@@ -1,50 +1,74 @@
-function WarrantyResult({ warranty }) {
-  if (!warranty) {
+function WarrantyResult({ result }) {
+  if (!result) {
     return null;
   }
 
-  if (!warranty.found) {
+  if (!result.success) {
     return (
-      <div className="result-card not-found">
-        <h2>Product Not Found</h2>
-        <p>
-          We could not find a product with this serial number.
-        </p>
+      <div className="warranty-result error">
+        <h3>Warranty information not found</h3>
+        <p>{result.message}</p>
       </div>
     );
   }
 
+  const product = result.data;
+
   return (
-    <div className="result-card">
-      <h2>Warranty Details</h2>
+    <div className="warranty-result">
+      <div className="result-header">
+        <div>
+          <p className="section-label">YOUR DEVICE</p>
+          <h3>{product.productName}</h3>
+        </div>
 
-      <div className="result-details">
-        <p>
-          <strong>Product:</strong> {warranty.product}
-        </p>
-
-        <p>
-          <strong>Serial Number:</strong> {warranty.serialNumber}
-        </p>
-
-        <p>
-          <strong>Purchase Date:</strong> {warranty.purchaseDate}
-        </p>
-
-        <p>
-          <strong>Warranty Until:</strong> {warranty.warrantyUntil}
-        </p>
+        <span
+          className={
+            product.warrantyStatus === "Active"
+              ? "status active"
+              : "status expired"
+          }
+        >
+          {product.warrantyStatus}
+        </span>
       </div>
 
-      <div
-        className={`warranty-status ${
-          warranty.active ? "active" : "expired"
-        }`}
-      >
-        {warranty.active
-          ? "✓ Warranty Active"
-          : "✕ Warranty Expired"}
+      <div className="result-grid">
+        <div>
+          <span>Serial Number</span>
+          <strong>{product.serialNumber}</strong>
+        </div>
+
+        <div>
+          <span>Model</span>
+          <strong>{product.model}</strong>
+        </div>
+
+        <div>
+          <span>Purchase Date</span>
+          <strong>
+            {new Date(product.purchaseDate).toLocaleDateString()}
+          </strong>
+        </div>
+
+        <div>
+          <span>Warranty Expiry</span>
+          <strong>
+            {new Date(product.warrantyExpiry).toLocaleDateString()}
+          </strong>
+        </div>
       </div>
+
+      {product.warrantyPdf && (
+        <a
+          href={product.warrantyPdf}
+          target="_blank"
+          rel="noreferrer"
+          className="pdf-button"
+        >
+          View Warranty PDF
+        </a>
+      )}
     </div>
   );
 }

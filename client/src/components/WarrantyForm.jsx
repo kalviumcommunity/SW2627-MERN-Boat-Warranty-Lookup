@@ -1,41 +1,69 @@
 import { useState } from "react";
 
-function WarrantyForm({ onCheckWarranty, loading }) {
+function WarrantyForm({ onResult }) {
   const [serialNumber, setSerialNumber] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!serialNumber.trim()) {
-      setError("Please enter a serial number.");
+      alert("Please enter your serial number.");
       return;
     }
 
-    setError("");
-    onCheckWarranty(serialNumber.trim());
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/products/${serialNumber.trim()}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        onResult({
+          success: false,
+          message: data.message || "Product not found",
+        });
+        return;
+      }
+
+      onResult(data);
+    } catch (error) {
+      onResult({
+        success: false,
+        message: "Unable to connect to the server.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form className="warranty-form" onSubmit={handleSubmit}>
-      <label htmlFor="serialNumber">
-        Product Serial Number
-      </label>
+    <div className="warranty-form">
+      <p className="section-label">WARRANTY CHECK</p>
 
-      <input
-        id="serialNumber"
-        type="text"
-        placeholder="Enter your serial number"
-        value={serialNumber}
-        onChange={(e) => setSerialNumber(e.target.value)}
-      />
+      <h2>Check your device warranty</h2>
 
-      {error && <p className="error-message">{error}</p>}
+      <p>
+        Enter your device serial number to check warranty status and product
+        details.
+      </p>
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Checking..." : "Check Warranty"}
-      </button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter serial number"
+          value={serialNumber}
+          onChange={(e) => setSerialNumber(e.target.value)}
+        />
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Checking..." : "Check Warranty"}
+        </button>
+      </form>
+    </div>
   );
 }
 
