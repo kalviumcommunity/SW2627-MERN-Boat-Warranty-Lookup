@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function WarrantyForm({ onResult }) {
   const [serialNumber, setSerialNumber] = useState("");
   const [loading, setLoading] = useState(false);
@@ -7,7 +9,9 @@ function WarrantyForm({ onResult }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!serialNumber.trim()) {
+    const trimmedSerialNumber = serialNumber.trim();
+
+    if (!trimmedSerialNumber) {
       alert("Please enter your serial number.");
       return;
     }
@@ -16,7 +20,9 @@ function WarrantyForm({ onResult }) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/products/${serialNumber.trim()}`
+        `${API_BASE_URL}/api/v1/products/${encodeURIComponent(
+          trimmedSerialNumber
+        )}`
       );
 
       const data = await response.json();
@@ -31,6 +37,8 @@ function WarrantyForm({ onResult }) {
 
       onResult(data);
     } catch (error) {
+      console.error("Warranty lookup error:", error);
+
       onResult({
         success: false,
         message: "Unable to connect to the server.",
@@ -57,6 +65,7 @@ function WarrantyForm({ onResult }) {
           placeholder="Enter serial number"
           value={serialNumber}
           onChange={(e) => setSerialNumber(e.target.value)}
+          disabled={loading}
         />
 
         <button type="submit" disabled={loading}>

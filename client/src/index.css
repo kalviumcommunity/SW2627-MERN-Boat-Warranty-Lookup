@@ -106,7 +106,9 @@ button {
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 650px;
+  padding: 80px;
+  color: white;
   position: relative;
   z-index: 2;
 }
