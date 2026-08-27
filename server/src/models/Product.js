@@ -8,30 +8,37 @@ const productSchema = new mongoose.Schema(
       unique: true,
       trim: true
     },
+
     productName: {
       type: String,
       required: true,
       trim: true
     },
+
     model: {
       type: String,
       required: true,
       trim: true
     },
+
     purchaseDate: {
       type: Date,
       required: true
     },
+
     warrantyExpiry: {
       type: Date,
       required: true
     },
+
     warrantyPdf: {
       type: String,
       default: null
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
 
 module.exports = mongoose.model("Product", productSchema);

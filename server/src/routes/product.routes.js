@@ -1,10 +1,13 @@
 const express = require("express");
 
 const {
-  getProductBySerialNumber,
+  createProduct,
+  getProductBySerialNumber
 } = require("../controllers/product.controller");
 
 const router = express.Router();
+
+router.post("/", createProduct);
 
 router.get("/:serialNumber", getProductBySerialNumber);
 
