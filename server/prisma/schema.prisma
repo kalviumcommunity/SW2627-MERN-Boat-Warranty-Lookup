@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id             Int      @id @default(autoincrement())
+  serialNumber   String   @unique
+  productName    String
+  model          String
+  purchaseDate   DateTime
+  warrantyExpiry DateTime
+  warrantyPdf    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  repairs Repair[]
+}
+
+model Repair {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  repairDate  DateTime
+  issue       String
+  description String?
+  status      String   @default("Pending")
+  cost        Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
