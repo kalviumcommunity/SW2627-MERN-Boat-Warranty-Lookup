@@ -696,3 +696,30 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ================= SERIAL NUMBER VALIDATION ================= */
+
+.serial-info {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #777;
+}
+
+.error-message {
+  margin-top: 10px;
+  color: #ff7777;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.warranty-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.warranty-form input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
