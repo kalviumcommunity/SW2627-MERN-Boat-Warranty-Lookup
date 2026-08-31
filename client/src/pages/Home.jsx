@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
+
 import WarrantyForm from "../components/WarrantyForm";
 import WarrantyResult from "../components/WarrantyResult";
-import Footer from "../components/Footer";
 
 function Home() {
   const [warrantyResult, setWarrantyResult] = useState(null);
@@ -55,8 +55,6 @@ function Home() {
 
   return (
     <>
-      <Navbar />
-
       {/* HERO */}
       <section className="hero">
         <div className="hero-content">
@@ -119,7 +117,7 @@ function Home() {
 
               <p>{product.description}</p>
 
-              <button>Explore →</button>
+              <Link to="/products">Explore →</Link>
             </div>
           ))}
         </div>
@@ -189,12 +187,9 @@ function Home() {
           </p>
 
           <div className="complaint-form">
-            <input
-              type="text"
-              placeholder="Enter complaint ID"
-            />
+            <input type="text" placeholder="Enter complaint ID" />
 
-            <button>Track Complaint</button>
+            <button type="button">Track Complaint</button>
           </div>
         </div>
 
@@ -235,9 +230,7 @@ function Home() {
 
           <h2>Something not right?</h2>
 
-          <p>
-            Find quick solutions to common device problems.
-          </p>
+          <p>Find quick solutions to common device problems.</p>
         </div>
 
         <div className="problem-grid">
@@ -249,7 +242,7 @@ function Home() {
 
               <p>{problem.description}</p>
 
-              <button>Find solution →</button>
+              <Link to="/help">Find solution →</Link>
             </div>
           ))}
         </div>
@@ -271,21 +264,21 @@ function Home() {
             Connect with our support team.
           </p>
 
-          <button className="primary-button">
+          <Link to="/contact" className="primary-button">
             Contact Support
-          </button>
+          </Link>
         </div>
 
         <div className="connect-card">
           <span>24/7</span>
+
           <h3>Customer Support</h3>
+
           <p>
             Get help with your products, warranty and service requests.
           </p>
         </div>
       </section>
-
-      <Footer />
     </>
   );
 }

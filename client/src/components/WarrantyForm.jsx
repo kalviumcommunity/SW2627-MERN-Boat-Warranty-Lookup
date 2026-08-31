@@ -1,48 +1,81 @@
 import { useState } from "react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 function WarrantyForm({ onResult }) {
   const [serialNumber, setSerialNumber] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+
+    // Allow only letters and numbers
+    if (!/^[a-zA-Z0-9]*$/.test(value)) {
+      setError("Serial number can contain only letters and numbers.");
+      return;
+    }
+
+    // Do not allow more than 11 characters
+    if (value.length > 11) {
+      return;
+    }
+
+    setSerialNumber(value);
+    setError("");
+
+    // Clear old result when user changes the serial number
+    if (onResult) {
+      onResult(null);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const trimmedSerialNumber = serialNumber.trim();
+    const serial = serialNumber.trim();
 
-    if (!trimmedSerialNumber) {
-      alert("Please enter your serial number.");
+    // 1. Empty validation
+    if (!serial) {
+      setError("Please enter your serial number.");
+      onResult(null);
       return;
     }
 
+    // 2. Alphanumeric validation
+    if (!/^[a-zA-Z0-9]+$/.test(serial)) {
+      setError("Serial number can contain only letters and numbers.");
+      onResult(null);
+      return;
+    }
+
+    // 3. Exactly 11 characters
+    if (serial.length !== 11) {
+      setError("Serial number must be exactly 11 characters long.");
+      onResult(null);
+      return;
+    }
+
+    setError("");
     setLoading(true);
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/products/${encodeURIComponent(
-          trimmedSerialNumber
-        )}`
+        `http://localhost:5000/api/products/${encodeURIComponent(serial)}`
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        onResult({
-          success: false,
-          message: data.message || "Product not found",
-        });
-        return;
+        throw new Error(
+          data.message || "Product warranty information not found."
+        );
       }
 
-      onResult(data);
+      onResult(data.product);
     } catch (error) {
-      console.error("Warranty lookup error:", error);
-
-      onResult({
-        success: false,
-        message: "Unable to connect to the server.",
-      });
+      onResult(null);
+      setError(
+        error.message || "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -50,21 +83,24 @@ function WarrantyForm({ onResult }) {
 
   return (
     <div className="warranty-form">
-      <p className="section-label">WARRANTY CHECK</p>
+      <p className="section-label">WARRANTY LOOKUP</p>
 
-      <h2>Check your device warranty</h2>
+      <h2>Check your warranty</h2>
 
       <p>
-        Enter your device serial number to check warranty status and product
-        details.
+        Enter your 11-character serial number to check your product warranty
+        information.
       </p>
 
       <form onSubmit={handleSubmit}>
         <input
+          id="serial"
           type="text"
-          placeholder="Enter serial number"
+          placeholder="Enter 11-character serial number"
           value={serialNumber}
-          onChange={(e) => setSerialNumber(e.target.value)}
+          onChange={handleChange}
+          maxLength={11}
+          autoComplete="off"
           disabled={loading}
         />
 
@@ -72,6 +108,16 @@ function WarrantyForm({ onResult }) {
           {loading ? "Checking..." : "Check Warranty"}
         </button>
       </form>
+
+      <div className="serial-info">
+        {serialNumber.length}/11 characters
+      </div>
+
+      {error && (
+        <p className="error-message" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
