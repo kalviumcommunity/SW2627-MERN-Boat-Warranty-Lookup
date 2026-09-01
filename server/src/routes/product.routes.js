@@ -2,7 +2,7 @@ const express = require("express");
 
 const {
   createProduct,
-  getProductBySerialNumber
+  getProductBySerialNumber,
 } = require("../controllers/product.controller");
 
 const router = express.Router();
