@@ -31,27 +31,47 @@ function Home() {
   ];
 
   const problems = [
-    {
-      icon: "🔧",
-      title: "Device not working",
-      description: "Get help when your device isn't functioning properly.",
-    },
-    {
-      icon: "🔊",
-      title: "Sound problem",
-      description: "Troubleshoot low, distorted or missing sound.",
-    },
-    {
-      icon: "💥",
-      title: "Physical damage",
-      description: "Find support for breakage and physical damage.",
-    },
-    {
-      icon: "🔋",
-      title: "Battery problem",
-      description: "Solutions for charging and battery issues.",
-    },
-  ];
+  {
+    icon: "🔧",
+    title: "Device not working",
+    description: "Get help when your device isn't functioning properly.",
+  },
+  {
+    icon: "🔊",
+    title: "Sound problem",
+    description: "Troubleshoot low, distorted or missing sound.",
+  },
+  {
+    icon: "💥",
+    title: "Physical damage",
+    description: "Find support for breakage and physical damage.",
+  },
+  {
+    icon: "🔋",
+    title: "Battery problem",
+    description: "Solutions for charging and battery issues.",
+  },
+  {
+    icon: "⚡",
+    title: "Charging problem",
+    description: "Get help with charging, cables and power issues.",
+  },
+  {
+    icon: "📱",
+    title: "Bluetooth connection",
+    description: "Fix pairing and Bluetooth connectivity problems.",
+  },
+  {
+    icon: "🎧",
+    title: "Earbuds not pairing",
+    description: "Troubleshoot earbuds that won't connect to your device.",
+  },
+  {
+    icon: "📶",
+    title: "Connectivity issue",
+    description: "Find solutions for connection and device communication issues.",
+  },
+];
 
   return (
     <>
@@ -242,7 +262,7 @@ function Home() {
 
               <p>{problem.description}</p>
 
-              <Link to="/help">Find solution →</Link>
+              <Link to={problem.link}>Find solution →</Link>
             </div>
           ))}
         </div>
