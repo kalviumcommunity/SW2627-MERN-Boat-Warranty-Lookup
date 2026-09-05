@@ -1,125 +1,116 @@
-import { useState } from "react";
+"use client";
 
-function WarrantyForm({ onResult }) {
-  const [serialNumber, setSerialNumber] = useState("");
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function WarrantyForm() {
+  const router = useRouter();
+
+  const [serial, setSerial] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 11);
 
-    // Allow only letters and numbers
-    if (!/^[a-zA-Z0-9]*$/.test(value)) {
-      setError("Serial number can contain only letters and numbers.");
-      return;
-    }
+    setSerial(value);
 
-    // Do not allow more than 11 characters
-    if (value.length > 11) {
-      return;
-    }
-
-    setSerialNumber(value);
-    setError("");
-
-    // Clear old result when user changes the serial number
-    if (onResult) {
-      onResult(null);
+    if (error) {
+      setError("");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const serial = serialNumber.trim();
+    const cleanSerial = serial.trim().toUpperCase();
 
-    // 1. Empty validation
-    if (!serial) {
+    if (!cleanSerial) {
       setError("Please enter your serial number.");
-      onResult(null);
       return;
     }
 
-    // 2. Alphanumeric validation
-    if (!/^[a-zA-Z0-9]+$/.test(serial)) {
-      setError("Serial number can contain only letters and numbers.");
-      onResult(null);
-      return;
-    }
-
-    // 3. Exactly 11 characters
-    if (serial.length !== 11) {
-      setError("Serial number must be exactly 11 characters long.");
-      onResult(null);
+    if (!/^[A-Z0-9]{11}$/.test(cleanSerial)) {
+      setError(
+        "Serial number must contain exactly 11 letters and numbers."
+      );
       return;
     }
 
     setError("");
     setLoading(true);
 
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/products/${encodeURIComponent(serial)}`
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Product warranty information not found."
-        );
-      }
-
-      onResult(data.product);
-    } catch (error) {
-      onResult(null);
-      setError(
-        error.message || "Something went wrong. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+    router.push(
+      `/warranty-result/${cleanSerial}`
+    );
   };
 
   return (
-    <div className="warranty-form">
-      <p className="section-label">WARRANTY LOOKUP</p>
+    <form
+      className="warranty-lookup-form"
+      onSubmit={handleSubmit}
+    >
 
-      <h2>Check your warranty</h2>
+      <label htmlFor="serial">
+        Serial Number
+      </label>
 
-      <p>
-        Enter your 11-character serial number to check your product warranty
-        information.
-      </p>
+      <div className="serial-input-wrapper">
+        <span className="serial-search-icon">
+          ⌕
+        </span>
 
-      <form onSubmit={handleSubmit}>
         <input
           id="serial"
           type="text"
-          placeholder="Enter 11-character serial number"
-          value={serialNumber}
+          value={serial}
           onChange={handleChange}
+          placeholder="Enter 11-character serial number"
           maxLength={11}
           autoComplete="off"
-          disabled={loading}
         />
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Checking..." : "Check Warranty"}
-        </button>
-      </form>
-
-      <div className="serial-info">
-        {serialNumber.length}/11 characters
       </div>
 
       {error && (
-        <p className="error-message" role="alert">
+        <p className="warranty-form-error">
           {error}
         </p>
       )}
-    </div>
+
+      <button
+        type="submit"
+        className="warranty-check-button"
+        disabled={loading}
+      >
+        {loading ? "Checking..." : "Check Warranty"}
+      </button>
+
+      <div className="warranty-or">
+        <span></span>
+        <strong>OR</strong>
+        <span></span>
+      </div>
+
+      <button
+        type="button"
+        className="warranty-scan-button"
+        onClick={() => {
+          alert("Barcode scanner can be connected here.");
+        }}
+      >
+        <span className="scan-icon">
+          ⛶
+        </span>
+
+        <span>
+          <strong>Scan Product Barcode</strong>
+          <small>Use your device camera</small>
+        </span>
+      </button>
+
+    </form>
   );
 }
-
-export default WarrantyForm;
